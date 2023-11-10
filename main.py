@@ -25,8 +25,29 @@ while not done:
 
     #start = pygame.Rect(startReflection.get_rect())
 
-    screen.blit(startReflection, (size[0] // 2, size[1] // 2))
-    screen.blit(quit, ())
+    #screen.blit(startReflection, (size[0] // 2, size[1] // 2))
+    #screen.blit(quit, ())
+
+    light = pygame.Rect(size[0] // 2 - 16 // 2, size[1] // 2 - 16 // 2, 16, 16)
+    pygame.draw.circle(screen, 'SKYBLUE', (light.centerx, light.centery), light.width // 2)
+    lightDx = 100
+    lightDy = 100
+
+    light.left += lightDx
+    light.top += lightDy
+
+    if light.left <= 0:
+        light.left = 0
+        lightDx = -lightDx
+    elif light.left >= size[0] - light.width:
+        light.left = size[0] - light.width
+        lightDx = -lightDx
+    if light.top <= 0:
+        light.top = 0
+        lightDy = -lightDy
+    elif light.top >= size[1] - light.height:
+        light.top = size[1] - light.height
+        lightDy = -lightDy
 
     pygame.display.flip() #화면 전체 업데이트
 
