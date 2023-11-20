@@ -1,16 +1,13 @@
 import pygame
 
-#image = []
-
-class Button(pygame.sprite.Sprite):
+class Start(pygame.sprite.Sprite):
     def __init__(self, position):
-        super(Button, self).__init__()
+        super(Start, self).__init__()
 
         #이미지들 리스트로 저장
         images = [] #이미지 [o, /, \]
-        images.append(pygame.image.load('image/Pin.png'))
-        images.append(pygame.image.load('image/Wall1.png'))
-        images.append(pygame.image.load('image/Wall2.png'))
+        images.append(pygame.image.load('image/Start.png'))
+        images.append(pygame.image.load('image/Ing.png'))
 
         #사이즈 설정
         size = (100, 100)
@@ -28,18 +25,19 @@ class Button(pygame.sprite.Sprite):
         self.centerx = self.rect.x
         self.centery = self.rect.y
 
-        self.isClick = 0 #0: 클릭X / 1: 좌클릭 / -1: 우클릭
+        self.isClick = False
+        self.start = False
 
     def update(self):
-        if self.isClick == 1: #좌클릭 시
+        if self.isClick == True: #좌클릭 시
             self.index += 1 #인덱스 증가
             if self.index >= len(self.images): #인덱스 초과 시
                 self.index %= len(self.images) #범윈 내 값 재설정
 
-        elif self.isClick == -1: #우클릭 시
-            self.index -= 1 #인덱스 감소
-            if self.index <= -1: #인덱스 초과 시
-                self.index += len(self.images) #범위 내로 값 재설정
+            if self.start == False:
+                self.start = True
+            else:
+                self.start = False
 
         self.image = self.images[self.index] #이미지 재설정
 
@@ -48,11 +46,10 @@ class Button(pygame.sprite.Sprite):
         if event.type != pygame.MOUSEMOTION: #마우스 움직임 틱 방지
             if event.type == pygame.MOUSEBUTTONDOWN: #마우스 클릭
                 if self.rect.collidepoint(event.pos): #마우스 버튼 충돌 시
-                    if mouseButton[0]: #좌클릭
-                        self.isClick = 1
-                    elif mouseButton[2]: #우클릭
-                        self.isClick = -1
+                    if mouseButton[0]: #클릭 시
+                        self.isClick = True
+
             elif event.type == pygame.MOUSEBUTTONUP: #마우스 클릭 해제
-                self.isClick = 0
+                self.isClick = False
         else:
-            self.isClick = 0
+            self.isClick = False

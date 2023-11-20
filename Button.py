@@ -1,7 +1,5 @@
 import pygame
 
-#image = []
-
 class Button(pygame.sprite.Sprite):
     def __init__(self, position):
         super(Button, self).__init__()
