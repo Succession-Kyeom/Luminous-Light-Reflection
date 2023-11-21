@@ -11,13 +11,13 @@ class Button(pygame.sprite.Sprite):
         images.append(pygame.image.load('image/Wall2.png'))
 
         #사이즈 설정
-        size = (100, 100)
+        self.size = (40, 40)
 
         #사각형에 이미지 삽입
-        self.rect = pygame.Rect(position, size)
+        self.rect = pygame.Rect(position, self.size)
 
         #Rect와 image 크기 맞추기
-        self.images = [pygame.transform.scale(image, size) for image in images]
+        self.images = [pygame.transform.scale(image, self.size) for image in images]
 
         self.index = 0
         self.image = images[self.index]
