@@ -15,23 +15,30 @@ class Light(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         #빛 좌표
-        self.lightPositionX = self.rect.centerx = self.rect.x // 2
-        self.lightPositionY = self.rect.centery = self.rect.y // 2
+        self.lightPositionX = self.rect.centerx = position[0]
+        self.lightPositionY = self.rect.centery = position[1]
 
         #빛 속도값
-        self.speed = 5
+        self.speed = 1
         self.lightDx = self.speed
-        self.lightDy = self.speed
+        self.lightDy = -1 * self.speed
 
         #빛 이동 방향
         self.vertical = True
         self.horizon = False
-        self.lightWay = self.horizon
+        self.lightWay = self.vertical
 
         #벽 충돌 감지
-        self.crash = False
+        self.isCrash = False
 
-        if self.crash == True:
+
+
+    def update(self):
+        self.rect = self.image.get_rect()
+        self.rect.centerx = self.lightPositionX
+        self.rect.centery = self.lightPositionY
+
+        if self.isCrash == True:
             if self.lightWay == self.vertical:
                 self.lightWay = self.horizon
 
@@ -42,12 +49,26 @@ class Light(pygame.sprite.Sprite):
         if self.lightWay == self.vertical:
             self.lightWay = self.horizon
             if index == 1:  # /과 충돌
-                self.lightDx = -1 * self.speed
+                if self.lightDy > 0:
+                    self.lightDx = -1 * self.speed
+                else:
+                    self.lightDx = self.speed
             elif index == 2:  # \과 충돌
-                self.lightDx = self.speed
+                if self.lightDy > 0:
+                    self.lightDx = -1 * self.speed
+                else:
+                    self.lightDx = self.speed
+            self.lightDy = 0
         else:
             self.lightWay = self.vertical
             if index == 1:  # /과 충돌
-                self.lightDy = self.speed
+                if self.lightDx > 0:
+                    self.lightDy = -1 * self.speed
+                else:
+                    self.lightDy = self.speed
             elif index == 2:  # \과 충돌
-                self.lightDy = -1 * self.speed
+                if self.lightDx > 0:
+                    self.lightDy = self.speed
+                else:
+                    self.lightDy = -1 * self.speed
+            self.lightDx = 0
