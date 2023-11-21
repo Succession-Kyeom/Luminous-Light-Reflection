@@ -14,7 +14,7 @@ clock = pygame.time.Clock() #프레임 설정 변수
 done = False #종료 여부 변수
 clear = False
 
-#빛 설정
+#빛 생성
 light = Light(position=[700, 800])
 
 light.lightPositionX = 400
@@ -23,18 +23,23 @@ light.lightPositionY = 600
 lightSprite = pygame.sprite.Group()
 lightSprite.add(light)
 
-goal = Goal()
-allSprites = pygame.sprite.Group()
-allSprites.add(goal)
+#골 생성
+goal = Goal(position=[100, 100])
 
+goalSprites = pygame.sprite.Group()
+goalSprites.add(goal)
+
+#시작 생성
 start = Start(position=[1500, 800])
+
 startSprites = pygame.sprite.Group()
 startSprites.add(start)
 
 #핀 생성
-pinPositionX = 300
-pinPositionY = 500
+pinPositionX = 1000
+pinPositionY = 550
 pin = Button(position=(pinPositionX, pinPositionY))
+
 pinSprites = pygame.sprite.Group()
 pinSprites.add(pin)
 
@@ -57,12 +62,13 @@ while not done:
                 screen.fill("BLACK")
 
     #빛이 벽과 충돌할 때
-    if light.circle.colliderect(pin):
-        if pin.index == 1 or pin.index == 2:
+    if light.rect.colliderect(pin):
+        if pin.index != 0:
+            print("crash")
             light.crash(pin.index)
 
     #빛 골과 충돌할 때
-    if light.circle.colliderect(goal):
+    if light.rect.colliderect(goal):
         clear = True
 
     #빛 출발 신호 받았을 때
@@ -73,7 +79,7 @@ while not done:
             light.lightPositionX += light.lightDx
 
     startSprites.draw(screen)
-    allSprites.draw(screen)
+    goalSprites.draw(screen)
     pinSprites.draw(screen)
     screen.blit(light.image, (light.lightPositionX, light.lightPositionY))
     pygame.display.flip() #화면 전체 업데이트

@@ -12,11 +12,11 @@ class Light(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (10, 10))
 
         #스프라이트 그리기
-        self.circle = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
         #빛 좌표
-        self.lightPositionX = self.circle.centerx = self.circle.x // 2
-        self.lightPositionY = self.circle.centery = self.circle.y // 2
+        self.lightPositionX = self.rect.centerx = self.rect.x // 2
+        self.lightPositionY = self.rect.centery = self.rect.y // 2
 
         #빛 속도값
         self.speed = 5
