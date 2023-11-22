@@ -4,8 +4,9 @@ from Light import Light
 from Goal import Goal
 from Start import Start
 from Wall import Wall
+from Clear import Clear
 
-def level():
+def level2():
     pygame.init()  # pygame 초기화
 
     size = (1600, 900)  # 화면 크기 변수
@@ -16,8 +17,6 @@ def level():
     done = False  # 종료 여부 변수
     clear = False  # 클리어 여부
     stop = False  # 벽 충돌 여부
-
-    blocks = 10
 
     # 빛 생성
     light = Light(position=[116, 890])
@@ -58,8 +57,23 @@ def level():
     wall.append(Wall(position=(850, 450), size=(10, 810)))
     wall.append(Wall(position=(500, 850), size=(700, 10)))
 
+    wall.append(Wall(position=(180, 680), size=(250, 10)))
+    wall.append(Wall(position=(290, 450), size=(470, 10)))
+    wall.append(Wall(position=(570, 225), size=(200, 10)))
+    wall.append(Wall(position=(800, 300), size=(85, 10)))
+    wall.append(Wall(position=(350, 600), size=(60, 10)))
+
+    wall.append(Wall(position=(380, 725), size=(10, 260)))
+    wall.append(Wall(position=(760, 230), size=(10, 150)))
+    wall.append(Wall(position=(670, 445), size=(10, 450)))
+    wall.append(Wall(position=(450, 100), size=(10, 90)))
 
     wallSprites.add(wall)
+
+    #클리어
+    clearImage = Clear(position=[800, 450])
+    clearSprites = pygame.sprite.Group()
+    clearSprites.add(clearImage)
 
     screen.fill("BLACK")  # 화면 채우기
 
@@ -91,12 +105,12 @@ def level():
                     if Button.mouseCount < 10:
                         pin[x].click(event)
                         pin[x].update()
-
                         light.update()
                         if pin[x].isClick != 0:  # 화면 재설정
                             screen.fill("BLACK")
                 start.click(event)
                 start.update()
+                clearImage.click(event)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
@@ -109,21 +123,25 @@ def level():
                     if pin[x].index == 1 or pin[x].index == 2:
                         light.crash(pin[x].index)
                         break
+            else:
+                if (pin[x].centerx, pin[x].centery) == (light.lightPositionX, light.lightPositionY):
+                    clear = True
+                    done = True
+                    break
 
         for x in range(len(wall)):
             if pygame.sprite.collide_mask(light, wall[x]):
                 stop = True
-                print('stop')
-        if light.rect.colliderect(pin[29]):
-            done = True
 
         # 빛 출발 신호 받았을 때
-        if start.start == True and stop != True:
+        if start.start == True and clear != True:
             if light.lightWay == light.vertical:
                 light.lightPositionY += light.lightDy
             else:
                 light.lightPositionX += light.lightDx
 
+        if clear == True:
+            clearSprites.draw(screen)
         wallSprites.draw(screen)
         pinSprites.draw(screen)
         startSprites.draw(screen)
@@ -131,5 +149,3 @@ def level():
         pygame.display.flip()  # 화면 전체 업데이트
 
     pygame.quit()
-
-level()
