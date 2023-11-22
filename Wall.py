@@ -15,6 +15,6 @@ class Wall(pygame.sprite.Sprite):
         # 스프라이트 그리기
         self.rect = self.image.get_rect()
 
-        # 빛 좌표
+        # 벽 좌표
         self.rect.centerx = position[0]
         self.rect.centery = position[1]
