@@ -20,7 +20,7 @@ class Light(pygame.sprite.Sprite):
         self.lightPositionY = self.rect.centery = position[1]
 
         # 빛 속도값
-        self.speed = 2
+        self.speed = 1
         self.lightDx = self.speed
         self.lightDy = -1 * self.speed
 
