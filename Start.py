@@ -5,7 +5,7 @@ class Start(pygame.sprite.Sprite):
         super(Start, self).__init__()
 
         #이미지들 리스트로 저장
-        images = [] #이미지 [o, /, \]
+        images = []
         images.append(pygame.image.load('image/Start.png'))
         images.append(pygame.image.load('image/Ing.png'))
 
