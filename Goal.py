@@ -7,8 +7,8 @@ class Goal(pygame.sprite.Sprite):
         self.rect = pygame.Rect(position, (30, 30)) #스프라이트 그리기
         self.image = pygame.transform.scale(self.image, (30, 30))  # 크기 조절
 
-        self.rect.centerx = self.rect.x + 16
-        self.rect.centery = self.rect.y + 16
+        self.centerx = self.rect.x + 16
+        self.centery = self.rect.y + 16
         self.isClick = 0
         self.index = -1
 

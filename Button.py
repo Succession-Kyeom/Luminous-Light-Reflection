@@ -6,6 +6,7 @@ class Button(pygame.sprite.Sprite):
 
     def __init__(self, position):
         super(Button, self).__init__()
+        Button.mouseCount = 0
 
         # 이미지들 리스트로 저장
         images = []  # 이미지 [o, /, \]

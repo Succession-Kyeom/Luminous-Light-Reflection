@@ -22,8 +22,8 @@ class Start(pygame.sprite.Sprite):
         self.image = images[self.index]
 
         #버튼 중심 좌표
-        self.centerx = self.rect.x
-        self.centery = self.rect.y
+        self.centerx = position[0]
+        self.centery = position[1]
 
         self.isClick = False
         self.start = False

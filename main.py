@@ -1,5 +1,6 @@
 import pygame
-from level import level
+from level1 import level1
+from level2 import level2
 pygame.init()
 
 size = (1600, 900) #화면 크기 변수
@@ -23,7 +24,9 @@ while not done:
         else:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
-                    level()
+                    level1()
+                elif event.key == pygame.K_2:
+                    level2()
 
     screen.fill("WHITE")  #화면 채우기
 

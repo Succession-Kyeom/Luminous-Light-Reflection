@@ -1,166 +1,144 @@
 import pygame
 from Button import Button
+from Light import Light
+from Goal import Goal
+from Start import Start
+from Wall import Wall
+from Clear import Clear
 
-"""
-#드래그 기능 클래스
-class DraggableObject(pygame.sprite.Sprite):
-    def __init__(self, image, position):
-        super().__init__()
-        self.image = pygame.image.load(image)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = position
-        self.is_dragging = False
-    def update(self):
-        if self.is_dragging:
-            self.rect.x, self.rect.y = pygame.mouse.get_pos()
-            self.rect.x -= self.rect.width // 2
-            self.rect.y -= self.rect.height // 2
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                self.is_dragging = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            self.is_dragging = False
-"""
+def level1():
+    pygame.init()  # pygame 초기화
 
+    size = (1600, 900)  # 화면 크기 변수
+    screen = pygame.display.set_mode(size)  # 창 크기 설정
+    pygame.display.set_caption("Luminous : Light Reflection")  # 창 이름
+    clock = pygame.time.Clock()  # 프레임 설정 변수
 
-class Goal(pygame.sprite.Sprite):
-    def __init__(self): #클래스 초기화
-        pygame.sprite.Sprite.__init__(self) #스프라이트 초기화
-        self.image = pygame.image.load('image/Goal.png') #골 이미지 정의
-        self.image = pygame.transform.scale(self.image, (100, 100)) #크기 조절
-        self.rect = self.image.get_rect() #스프라이트 그리기
-        self.rect.centerx = goalPositionX
-        self.rect.centery = goalPositionY
+    done = False  # 종료 여부 변수
+    clear = False  # 클리어 여부
+    stop = False  # 벽 충돌 여부
 
-class Wall(pygame.sprite.Sprite):
-    def __init__(self): #클래스 초기화
-        pygame.sprite.Sprite.__init__(self) #스프라이트 초기화
-        self.image = pygame.image.load('image/wall.png') #골 이미지 정의
-        self.image = pygame.transform.scale(self.image, (10, 60)) #크기 조절
-        self.rect = self.image.get_rect() #스프라이트 그리기
-        self.rect.centerx = wallPositionX
-        self.rect.centery = wallPositionY
-        self.is_dragging = False
+    # 빛 생성
+    light = Light(position=[116, 890])
 
-    def update(self):
-        if self.is_dragging:
-            self.rect.x, self.rect.y = pygame.mouse.get_pos()
-            self.rect.x -= self.rect.width // 2
-            self.rect.y -= self.rect.height // 2
+    lightSprite = pygame.sprite.Group()
+    lightSprite.add(light)
 
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                self.is_dragging = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            self.is_dragging = False
+    # 시작 생성
+    start = Start(position=[1000, 450])
 
-class Light(pygame.sprite.Sprite):
-    def __init__(self):  # 클래스 초기화
-        pygame.sprite.Sprite.__init__(self)  # 스프라이트 초기화
-        self.image = pygame.image.load('image/Light.png')  # 골 이미지 정의
-        self.image = pygame.transform.scale(self.image, (10, 10))  # 크기 조절
-        self.rect = self.image.get_rect()  # 스프라이트 그리기
-        self.rect.centerx = lightPositionX
-        self.rect.centery = lightPositionY
+    startSprites = pygame.sprite.Group()
+    startSprites.add(start)
 
+    # 핀 생성
+    pin = []
+    pinSprites = pygame.sprite.Group()
+    pinPositionX = 100
+    pinPositionY = 100
+    index = 0
+    for y in range(10):
+        pinPositionX = 100
+        for x in range(10):
+            if x == 9 and y == 2:
+                pin.append(Goal(position=(pinPositionX, pinPositionY)))
+            else:
+                pin.append(Button(position=(pinPositionX, pinPositionY)))
 
-pygame.init()
+            pinPositionX += 75
+            index += 1
+        pinPositionY += 75
+    pinSprites.add(pin)
 
-size = (1920, 1080) #화면 크기 변수
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Luminous : Light Reflection") #창 이름
-clock = pygame.time.Clock() #프레임 설정 변수
+    # 벽 생성
+    wall = []
+    wallSprites = pygame.sprite.Group()
+    wall.append(Wall(position=(50, 450), size=(10, 810)))
+    wall.append(Wall(position=(450, 50), size=(810, 10)))
+    wall.append(Wall(position=(850, 450), size=(10, 810)))
+    wall.append(Wall(position=(500, 850), size=(700, 10)))
 
-done = False #종료 여부 변수
-crash = False #충돌 여부 변수
+    wall.append(Wall(position=(800, 300), size=(85, 10)))
 
-#빛 설정
-light = pygame.image.load('image/Light.png')
-#빛 속도
-lightDx = 5
-lightDy = 5
-# 빛 좌표
-lightPositionX = light.get_size()[0] // 2
-lightPositionY = light.get_size()[1] // 2
-#빛 이동 방향
-vertical = True
-horizon = False
-lightWay = horizon
+    wall.append(Wall(position=(760, 260), size=(10, 80)))
 
-goalPositionX = 10
-goalPositionY = 20
+    wallSprites.add(wall)
 
-wallPositionX = 100
-wallPositionY = 800
+    #클리어
+    clearImage = Clear(position=[800, 450])
+    clearSprites = pygame.sprite.Group()
+    clearSprites.add(clearImage)
 
-wall = Wall()
-wallSprites = pygame.sprite.Group()
-wallSprites.add(wall)
+    screen.fill("BLACK")  # 화면 채우기
 
-goal = Goal()
-wallSprites.add(goal)
+    def init():
+        index = 0
+        pinPositionY = 100
+        for y in range(10):
+            pinPositionX = 100
+            for x in range(10):
+                pin[index].__init__([pinPositionX, pinPositionY])
+                pinPositionX += 75
+                index += 1
+            pinPositionY += 75
+        light.__init__([116, 890])
+        start.__init__([1000, 450])
+        screen.fill("BLACK")
 
-screen.fill("BLACK")  # 화면 채우기
+        crash = False
+        clear = False
 
-#핀 생성
-pinPositionX = 300
-pinPositionY = 500
-pin = Button(position=(pinPositionX, pinPositionY))
-pinSprites = pygame.sprite.Group()
-pinSprites.add(pin)
+    while not done:
+        clock.tick(60)  # 프레임 설정
 
-while not done:
-    clock.tick(60)  # 프레임 설정
+        for event in pygame.event.get():  # 유저가 이벤트를 발생 시킬 떄
+            if event.type == pygame.QUIT:  # 종료를 누르면
+                done = True  # 종료하여 루프 탈출
+            else:
+                for x in range(len(pin)):
+                    if Button.mouseCount < 2:
+                        pin[x].click(event)
+                        pin[x].update()
+                        light.update()
+                        if pin[x].isClick != 0:  # 화면 재설정
+                            screen.fill("BLACK")
+                start.click(event)
+                start.update()
+                clearImage.click(event)
 
-    for event in pygame.event.get(): #유저가 이벤트를 발생 시킬 떄
-        if event.type == pygame.QUIT: #종료를 누르면
-            done = True  #종료하여 루프 탈출
-        else:
-            wall.handle_event(event)
-            pin.click(event)
-            wallSprites.update()
-            pin.update()
-            screen.fill("BLACK")
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    init()
 
-        if event.type == pygame.KEYDOWN: #키를 눌렀을 때
-            if event.key == pygame.K_SPACE: #스페이스 바이면
-                screen.fill("BLACK")
+        # 빛이 거울과 충돌할 때
+        for x in range(len(pin)):
+            if x != 29:
+                if (pin[x].centerx, pin[x].centery) == (light.lightPositionX, light.lightPositionY):
+                    if pin[x].index == 1 or pin[x].index == 2:
+                        light.crash(pin[x].index)
+                        break
+            else:
+                if (pin[x].centerx, pin[x].centery) == (light.lightPositionX, light.lightPositionY):
+                    clear = True
+                    done = True
+                    break
 
+        for x in range(len(wall)):
+            if pygame.sprite.collide_mask(light, wall[x]):
+                stop = True
 
+        # 빛 출발 신호 받았을 때
+        if start.start == True and clear != True:
+            if light.lightWay == light.vertical:
+                light.lightPositionY += light.lightDy
+            else:
+                light.lightPositionX += light.lightDx
 
-    if lightWay == vertical:
-        lightPositionY += lightDy
-    else:
-        lightPositionX += lightDx
+        if clear == True:
+            clearSprites.draw(screen)
+        wallSprites.draw(screen)
+        pinSprites.draw(screen)
+        startSprites.draw(screen)
+        screen.blit(light.image, (light.lightPositionX, light.lightPositionY))
+        pygame.display.flip()  # 화면 전체 업데이트
 
-    if pygame.sprite.collide_rect(wall, goal):
-        crash = True
-
-    if crash == True:
-        done = True
-
-
-
-    if lightPositionX <= 1.5 * light.get_size()[0]:
-        lightPositionX = 1.5 * light.get_size()[0]
-        lightDx = -lightDx
-    elif lightPositionX >= size[0] - 2 * light.get_size()[0]:
-        lightPositionX = size[0] - 2 * light.get_size()[0]
-        lightDx = -lightDx
-    if lightPositionY <= 1.5 * light.get_size()[1]:
-        lightPositionY = 1.5 * light.get_size()[1]
-        lightDy = -lightDy
-    elif lightPositionY >= size[1] - 2 * light.get_size()[1]:
-        lightPositionY = size[1] - 2 * light.get_size()[1]
-        lightDy = -lightDy
-
-    wallSprites.draw(screen)
-    pinSprites.draw(screen)
-    screen.blit(light, (lightPositionX, lightPositionY))
-    pygame.display.flip() #화면 전체 업데이트
-
-pygame.quit()
-
-# https://velog.io/@whdnjsdyd111/python-library-pygame-1.-%EA%B0%9C%EC%9A%94
+    pygame.quit()
